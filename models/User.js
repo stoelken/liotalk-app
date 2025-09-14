@@ -1,18 +1,26 @@
-import crypto from "crypto";
+import { v4 as uuidv4 } from "uuid";
 
 export default class User {
-  constructor(id, name, email) {
-    this.id = id;
+  constructor(name, email) {
+    this.id = uuidv4();
     this.name = name;
     this.email = email;
-    this.friends = []; // Liste von userIds
-    this.meetings = []; // Meetings die er erstellt hat
+    this.friends = []; // List of friends
+    this.meetings = []; // List of meetings created by the user
   }
 
   addFriend(friendId) {
-    if (!this.friends.includes(friendId)) {
-      this.friends.push(friendId);
-    }
+  const friend = getUserById(friendId); // Friend immer abrufen
+
+  if (this.friends.includes(friendId)) {
+    throw new Error(`${friend.name} is already a friend.`);
+  }
+
+  this.friends.push(friendId);
+}
+
+  removeFriend(friendId) {
+    this.friends = this.friends.filter((id) => id !== friendId);
   }
 
   createMeeting(title, description, date, location, type = "private") {
